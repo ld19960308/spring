@@ -1,0 +1,63 @@
+  在spring配置文件中使用XML元素进行配置，实际是让Spring执行相应的代码。
+例如：
+  使用bean元素就是让Spring执行无参数构造器，或有参数的构造器。
+  使用property元素是让Spring执行一次setter方法
+  但Java程序还可能有其他类型的语句：调用getter方法、调用普通方法、访问类或对象的Field，而Spring也为这种语句提供了对应的配置语法
+  调用getter方法：使用PropertyPathFactoryBean
+  访问类或对象的Field值：使用FieldRetrievingFactoryBean
+  调用普通方法：使用MethodInvokingFactoryBean
+  所以Spring框架是让开发者无需编写Java代码进行编程，开发者XML采用合适语法进行配置后，Spring就可通过反射在底层执行任意Java代码。
+两种后处理器
+  1.bean后处理器实现BeanPostProcessor接口并实现两个方法，然后在<bean id="" class=""></bean>注册
+注意要使用beanfactory时要手动注册后处理器。两种常用的后处理器BeanNameAutoProxyCreator和DefaultAdvisorAutoProxyCreator
+  2.容器后处理器实现BeanFactoryPostProcessor接口并实现方法。常用的后处理器
+    1.PropertyPlaceholderConfigurer属性占位符配置器：
+     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+       <property name="locations">
+         <list>
+          <value>dbconn.properties</value>
+         </list>
+       </property>
+      </bean>
+      <bean id="datasource" class="">
+        <property name="driverClass" value="${jdbc.driverClassName}"/>
+        ....
+      </bean>
+      或者
+      <context:property-placeholder location="classpath:db.properties"/>
+      dbconn.properties中文件格式：key=value
+    2.PropertyOverrideConfigurer重写占位符配置器:
+      <bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
+       <property name="locations">
+         <list>
+          <value>dbconn.properties</value>
+         </list>
+       </property>
+      </bean>
+      <bean id="datasource" class="">
+        
+      </bean>
+      或者
+      <context:property-override location="classpath:db.properties"/>
+      db.properties格式beanName.property=value
+    3.CustomAutowireConfigurer自定义自动装配的配置器
+    4.CustomScopeConfigurer自定义作用域配置器
+资源访问Resource方法:
+    1.getInputStream()
+    2.exists()
+    3.isOpen()
+    4.getDescription()
+    5.getFile()
+    6.getUrl()
+  常用的实现类： ApplicationContext.getResource("");
+    UrlResource访问网络资源http：和ftp：
+    ClassPathResource类加载路径classpath：
+    FileSystemResource文件系统
+    ServletContextResource相对ServletContext路径的实现类new ServletContextResource(application,"WEB-INF/);
+    InputStreamResource输入流资源
+    ByteArrayResource访问字节数组资源
+  Resource也可以当做属性注入
+在ApplicationContext中使用资源
+  ClassPathXmlApplicationContext，classpath多个问价classpath*
+  FileSystemXmlApplicationcontext
+  XmlWebApplicationContext

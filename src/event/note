@@ -1,0 +1,112 @@
+Spring的内置事件:
+  ContextRefreshedEvent：ApplicationContext容器初始化或刷新触发事件。初始化是指所有Bean被成
+功装载，后处理Bean被检测并激活，所有Singleton Bean被预实例化，ApplicationContext容器就绪可
+以使用。
+  ContextStartedEvent：ConfigurableApplicationContext接口的start方法启动ApplicationContext
+容器是触发该事件。容器管理声明周期的Bean实例将获取一个指定的启动信号，者在经常需要停止后重
+新启动的场合比较常见。
+  ContextClosedEvent：调用close方法。
+  ContextStoppedEvent：ConfigurableApplicationContext的stop方法使ApplicationContext停止时
+触发该事件。停止是指容器管理生命周期的Bean实例将获得一个指定的停止信号，被停止的Spring容器
+可再次调用start重新启动
+  RequestHandledEvent：Web相关的时间，只能应用于使用DispatcherServlet的Web应用。在使用Spring
+作为前段的MVC控制器时，当Spring处理用户请求结束后，系统会自动触发。
+  让Bean实现ApplicationContextAware接口并增加ApplicationContext的getter和setter可以让Bean
+拥有ApplicationContext对象。同样BeanFactoryAware
+  beans的属性：
+    1.default-lazy-init 
+    2.default-merge
+    3.default-autowire
+    4.default-autowire-candidates
+    5.default-init-method
+    6.default-destroy-method
+  bean的属性：
+    1.id
+    2.name
+    3.scope
+  bean拥有初始化参数时使用在元素：
+    constructor-arg index=“” value=“” type=“” 
+  别名<alias name="" alias=""/>
+  作用域：
+    1.singleton：Spring默认单例
+    2.prototype:原型模式
+    3.request：在每次的HTTP请求，使用request定义的Bean产生一个新的Bean实例。在Web中有效
+     在2.4以上web.xml增加listener org.springframework.web.context.request.RequestContextListener
+    4.session:在每次的HTTP请求，使用session定义的Bean产生一个新的Bean实例。在Web中有效
+    5.global session：每个全局的HTTP Session对应一个Bean实例。典型情况下，仅在使用portlet
+context时候有效。
+  依赖注入
+   自动装配：
+    1.no
+    2.byType
+    3.byName
+    4.constructor:与byType类似，区别是用于构造注入的参数。如果多个类型相同抛出异常
+    5.autodetect：根据Bean的内部接口来决定是constructor还是byType有默认构造用byType
+   注入嵌套Bean：<property name=""><bean class=""/></property>
+   注入集合值：
+     <property name="books">
+        <list>
+          <value></value>
+        </list>
+      </property>
+      <property name="scores">
+        <map>
+          <entry key="" value=""/>
+        </map>
+      </property>
+      <property name="phaseAxes">
+        <map>
+          <entry key="" value-ref=""/>
+        </map>
+      </property>
+      <property name="health">
+        <props>
+          <prop key="血压">正常</prop>
+        </props>
+      </property>
+      <property name="axes">
+        <set>
+         <value></value>
+         <bean class=""/>
+         <ref local=""/>
+        </set>
+      </property>
+    使用list，set，map元素配置集合时，还需要手动配置集合元素，而集合元素又可以是基本类型值
+ 引用容器的其他bean，嵌套bean或集合属性。list，key，set元素由可以接受如下子元素：
+      1.value
+      2.ref
+      3.bean
+      4.list，set，map，props：指定集合元素值又是集合
+    props可以配置多个<prop key=""></prop>
+    map配置时每个元素由key和value两个部分组成，所以用entry子元素它有以下属性：
+       1.key：基本类型或字符串
+       2.key-ref：引用另一个bean
+       3.value
+       4.value-ref
+    还可以指定对象的属性值如：<bean...><property name="pserson.name" value="孙悟空"/></bean>
+  获取一个Bean的流程建立ApplicationContext,调用Chinese类的默认构造，根据配置注入，返回实例
+  使用静态工厂方法创建Bean：
+    <bean id="" class="工厂类" factory-method="静态工厂方法">
+      <constructor-arg value="静态工厂方法参数"/>
+      <property name="" value=""/>返回实例的属性注入
+    </bean> 
+   使用实例工厂方法创建Bean：
+     <bean id="" factory-bean="factory" factory-method="">...</bean>
+     <bean id="factory"...>...</bean>
+深入Spring
+   抽象Bean在Bean中增加abstract=“true”Spring不会建立抽象Bean。也是模板Bean
+   子Bean继承抽象Bean方式大部分配置相同的Bean的出现<bean id="" parent="">部分或全部属性覆盖</bean>
+   工厂Bean，FactoryBean接口三个方法：
+      T getObject();
+      Class<?> getObjectType();
+      boolean isSingleton();
+     自己编写工厂类实现FactoryBean接口
+   需要获取Bean的id则实现BeanNameAware接口，并增加属性beanName和getter和setter
+   强制初始化Bean在为bean增加depends-on属性并制定bean值
+ bean的生命周期
+   bean的初始化
+     1.init-method属性指定一个方法
+     2.实现InitalizingBean接口并实现方法。调用优先于init-method
+   bean的销毁
+     1.destroy-method
+     2.实现DisposableBean。在destroy-method后调用

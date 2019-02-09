@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"  
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+       xsi:schemaLocation="http://www.springframework.org/schema/beans  
+           http://www.springframework.org/schema/beans/spring-beans.xsd">
+  <bean id="person" class="propertyInject.Person">
+    <property name="age" value="30"></property>
+    <property name="son">
+      <bean class="propertyInject.Son">
+        <property name="age" value="11"/>
+      </bean>
+    </property>
+  </bean>
+  <!-- son的age属性依赖于person中son的age属性值 -->
+  <bean id="son" class="propertyInject.Son">
+    <property name="age">
+       <bean id="person.son.age" class="org.springframework.beans.factory.config.PropertyPathFactoryBean"></bean>
+    </property>
+  </bean>      
+  <!-- 直接将person中的son实例封装到son1中 -->
+  <bean id="son1" class="org.springframework.beans.factory.config.PropertyPathFactoryBean">
+   <!-- 指定目标bean -->
+   <property name="targetBeanName" value="person"></property>
+   <!-- 目标bean的哪些属性值 -->
+   <property name="propertyPath" value="son"/>
+  </bean>    
+  <!-- 将其他类的静态Filed赋值给其他的Bean -->
+  <bean id="son2" class="propertyInject.Son">
+     <property name="age">
+       <bean id="java.sql.Connection.TRANSACTION_SERIALIZABLE" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+     </property>
+  </bean>
+  <!-- 将其他类的Filed赋值给其他的Bean -->
+  <bean id="age" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+     <property name="targetClass" value="java.sql.Connection"/>
+     <property name="targetField" value="TRANSACTION_SERIALIZABLE"/>
+  </bean>
+  <!-- 注入实例方法的返回值 -->
+  <bean id="son3" class="propertyInject.Son">
+      <property name="age">
+        <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+           <property name="targetObject" ref="person"></property>
+           <property name="targetMethod" value="getAge"/>
+        </bean>
+      </property>
+  </bean>
+  <!-- 注入静态方法的返回值 -->
+  <bean id="son4" class="propertyInject.Son">
+      <property name="age">
+        <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+           <property name="targetClass" value="propertyInject.Person"></property>
+           <property name="targetMethod" value="getStaticAge"/>
+        </bean>
+      </property>
+  </bean>
+  <!-- 注入带有参数的方法的返回值 -->
+  <bean id="sysProps" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+    <property name="targetClass" value="java.lang.System"/>
+    <property name="targetMethod" value="getProperties"></property>
+  </bean>
+  <bean id="javaVersion" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+           <property name="targetObject" ref="sysProps"></property>
+           <property name="targetMethod" value="getProperty"/>
+           <property name="arguments">
+             <list>
+               <value>java.version</value>
+             </list>
+           </property>
+  </bean>
+</beans>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"  
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+       xsi:schemaLocation="http://www.springframework.org/schema/beans  
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+<!-- 采用AOP配置方式的AOP实现 start -->
+  <bean id="userDao" class="aop.UserDaoImp"></bean>
+  <bean id="userBiz" class="aop.UserBizImp">
+   <property name="userDao" ref="userDao"></property>
+  </bean>
+  <bean id="allLogAdvice" class="aop.AllLogAdvice"/>
+   <aop:config>
+    <aop:aspect id="logaop" ref="allLogAdvice">
+    <!-- 定义切入点，切入点采用正则表达式execution(*aop.UserBiz.*(..))对UserBiz中所有方法进行拦截 -->
+     <aop:pointcut id="logpointcut" expression="execution(* aop.UserBiz.*User(..))"/>
+     <aop:pointcut id="argpointcut" expression="execution(* aop.UserBiz.arg(String)) and args(args)"/>
+     <aop:before method="myBeforeAdvice" pointcut-ref="logpointcut"/>
+     <aop:after-returning method="myAfterReturnAdvice" pointcut-ref="logpointcut"/>
+     <aop:after-throwing method="myThrowingAdvice" pointcut-ref="logpointcut" throwing="e"/>
+     <aop:around method="myAroundAdvice" pointcut-ref="logpointcut"/>
+     <aop:before pointcut-ref="argpointcut" method="beforeAdviceAndArgs" arg-names="args"/>
+    </aop:aspect>
+   </aop:config>
+  <!-- 采用AOP配置方式的AOP实现 end -->
+  </beans>

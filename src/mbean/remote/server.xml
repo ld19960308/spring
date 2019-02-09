@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"  
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans  
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context 
+           http://www.springframework.org/schema/context/spring-context.xsd">
+   <context:mbean-server/><!-- 默认为mbeanServer -->
+   <context:component-scan  base-package="mbean.remote" />
+   <context:mbean-export server="mbeanServer" registration="replaceExisting"/>
+   <bean id="rmiRegistry"  class="org.springframework.remoting.rmi.RmiRegistryFactoryBean" p:port="1099"/>
+   <bean class="org.springframework.jmx.support.ConnectorServerFactoryBean"
+         p:serviceUrl="service:jmx:rmi://localhost/jndi/rmi://localhost:1099/remote" depends-on="rmiRegistry" />
+   <bean id="remoteRemoteBeanMBean" class="org.springframework.jmx.access.MBeanProxyFactoryBean"
+         p:objectName="remote:name=RemoteBean" p:server-ref="mbeanServer"
+         p:proxyInterface="mbean.remote.RemoteBeanManagedOperations"/>
+</beans>

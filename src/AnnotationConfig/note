@@ -1,0 +1,21 @@
+@Configuration:修饰一个java配置类
+@Value:修饰一个Field用于为配置一个值
+@Bean:修饰一个方法将该方法的返回值定义成容器的一个Bean
+@Import:修饰一个Java配置类，用于箱单前Java配置类中导入其他的Java配置类
+@Scope:修饰方法来指定Bean生命域
+@Lazy:修饰方法来指定Bean是否采用延迟加载
+@DependOn:修饰方法，指定在初始化该方法对应的Bean之前初始化指定Bean
+
+  Annotation出现较晚功能不如xml配置强大，在Annotation出现之前大部分的web项目
+ 都是用xml配置的所以出现了Annotation和xml共存的情况。
+  1.以xml配置为主用xml配置加载Java配置类
+  <beans ...>
+   <context:annotation-config/>
+   <bean class="AnnotationConfig.AppConfig"/>
+  </beans>
+  2.以Java类配置为主，用Java类加载XML配置
+  @Configuration
+  @ImportResource("classpath:/beans.xml")
+  public class MyConfig{
+   ...
+  }

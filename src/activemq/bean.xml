@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"  
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+       xmlns:amq="http://activemq.apache.org/schema/core"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans  
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context 
+           http://www.springframework.org/schema/context/spring-context.xsd
+           http://activemq.apache.org/schema/core
+           http://activemq.apache.org/schema/core/activemq-core.xsd">
+   <context:component-scan base-package="activemq"/>
+   <!-- <bean id="connectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory">
+     <property name="brokerURL" value="tcp://localhost:61616"></property>
+   </bean> -->
+   <!-- 声明连接工厂 -->
+   <amq:connectionFactory id="connectionFactory" brokerURL="tcp://localhost:61616">
+      <property name="trustAllPackages" value="true"/> 
+   </amq:connectionFactory>
+   <!-- 声明队列 -->
+   <!-- <bean id="queue" class="org.apache.activemq.command.ActiveMQTopic">
+     <constructor-arg>myQueue</constructor-arg>
+   </bean> -->
+   <amq:queue id="queue" physicalName="myQueue"/>
+   <!-- 声明主题
+    <bean id="topic" class="org.apache.activemq.command.ActiveMQTopic">
+     <constructor-arg>myTopic</constructor-arg>
+    </bean>
+    
+    <amp:topic id="topic" physicalName="myTopic"/> -->
+    
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+      <property name="connectionFactory" ref="connectionFactory"></property>
+      <property name="defaultDestinationName" value="myQueue"></property>
+    </bean>
+  </beans>

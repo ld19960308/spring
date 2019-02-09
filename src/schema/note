@@ -1,0 +1,23 @@
+util的元素： 
+  1.constant：将指定类的静态Field暴露成一个Bean实例。有两个属性：
+    1.id指定将静态Field定义成Bean的id
+    2.static-field指定将那个类的哪个静态Field暴露出来
+  2.property-path：指定Bean实例的指定属性暴露成一个Bean实例。它也有两个属性：
+    1.id指定属性定义成id的Bean
+    2.path指定哪个Bean实例的哪个属性暴露出来。
+  3.list标签定义List Bean支持value，ref和bean等标签定义集合元素。
+    1.id名为id的List Bean实例
+    2.list-class指定Spring使用哪个List实现类来创建Bean
+    3.scope作用域
+  4.set支持value，ref，bean定义集合元素
+    1.id
+    2.set-class
+    3.scope
+  5.map使用entry定义key-value对
+    1.id
+    2.map-class
+    3.scope
+  6.properties加载资源文件并根据资源文件创建一个Properties Bean实例
+    1.id
+    2.location指定资源文件的位置
+    3.scope

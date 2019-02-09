@@ -1,0 +1,10 @@
+<tx:advice id="advice" transaction-manager="transactionManager">
+ <tx:attributes>
+   <tx:method name="get*" read-only="true"/>
+   <tx:method name="set*" />
+ </tx:attributes>
+</tx:advice>
+<aop:config>
+  <aop:pointcut id="pointcut" expression="execution(* ))"/>
+  <aop:advisor advice-ref="advice" pointcut-ref="pointcut"/>
+</aop:config>

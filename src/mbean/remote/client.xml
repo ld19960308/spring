@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"  
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans  
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context 
+           http://www.springframework.org/schema/context/spring-context.xsd">
+   <bean id="mbeanClient" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean"
+         p:serviceUrl="service:jmx:rmi://localhost/jndi/rmi://localhost:1099/remote" />
+   <!-- <bean id="jmxClient" class="com.springaction.jmx.JMXClient">
+     <property name="mbeanServerConnetion" ref="mbeanClient"></property>
+   </bean>  -->
+</beans>
